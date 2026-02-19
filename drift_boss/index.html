@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html><head>
+
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/arcade-v//Arcade-4-games@latest/javascript/drift_boss/game.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/arcade-v/javascript/drift_boss/game.js"></script>
+<style type="text/css">#button {
+  display:none;
+}
+.imgb_vis {
+  animation: imgb-animation 7s linear;
+}
+@keyframes imgb-animation {
+  10% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(100px);
+  }
+  90% {
+    transform: translateX(100px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}</style></head>
+<body onload="setTimeout(function(){window.scrollTo(0,1)},1);">
+<div id="ajaxbar" style="width: 300px; height: 150px; background: none;">
+<div id="game" style="z-index: 1;"><canvas id="canvas" width="1920" height="960" style="width: 300px; height: 150px; left: 0px; top: 0px;"></canvas></div>
+<div id="webgl" style="z-index: 0;"><canvas id="webglcanvas" touch-action="none" style="touch-action: none; width: 300px; height: 150px; left: 0px; top: 0px;" width="300" height="150"></canvas></div>
+<div id="orientate" style="width: 300px; height: 150px; left: 0px; top: 0px;"><img src="https://cdn.jsdelivr.net/gh/arcade-v/javascript/drift_boss/landscape.jpg"></div>
+<div id="play" class="play" onclick="" style="width: 300px; height: 150px; left: 0px; top: 0px;"><img src="https://cdn.jsdelivr.net/gh/arcade-v/javascript/drift_boss/cover-start.jpg"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/arcade-v/javascript/drift_boss/api.js"></script>
+
+
+</body></html>

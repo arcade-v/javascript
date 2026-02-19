@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="https://cdn.jsdelivr.net/gh/arcade-v/javascript/doom/">
+<title>DOOM</title>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="First-person-shooter DOOM from 1993 ported for the web">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0.0, viewport-fit=cover">
+<style>
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	background: black;
+	overflow: hidden;
+}
+a {
+	color: #867ae0;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+body {
+	color: #ccc;
+	font-family: Monospace;
+	font-size: 16px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+canvas {
+	display: block;
+	width: 100vw;
+	height: 100vh;
+}
+@keyframes page-loader { 
+	0% {transform: rotate(0deg);} 
+	100% {transform: rotate(360deg);}
+}
+.info-overlay {
+	text-align: center;
+	position: absolute;
+	top: 0; bottom: 0; left: 0; right: 0;
+	margin: auto;
+	width: 200px;
+	height: 200px;
+	display: none;
+}
+#spinner {
+	border-radius: 50%;
+	width: 48px;
+	height: 48px;
+	position: absolute;
+	margin: auto;
+	top: 0; bottom: 0; left: 0; right: 0;
+	border-top: 2px solid #222;
+	border-right: 2px solid #222;
+	border-bottom: 2px solid #222;
+	border-left: 2px solid #867ae0;
+	transform: translateZ(0);
+	animation: page-loader 1.1s infinite linear;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+
+<div class="info-overlay" id="loading">
+	<div id="spinner"></div>
+	<div id="status">Downloading...</div>
+	<div>
+		<progress value="0" max="100" id="progress" hidden></progress>  
+	</div>
+</div>
+
+<div class="info-overlay" id="select-version">
+	<a href="#" id="load">Load</a><br/>
+	~11mb
+</div>
+
+<script type="text/javascript">
+document.getElementById('select-version').style.display = 'block';
+
+const loadScript = (ev, src) => {
+	ev.preventDefault();
+	document.getElementById('select-version').style.display = 'none';
+	document.getElementById('loading').style.display = 'block';
+	const s = document.createElement('script');
+	s.src = src;
+	document.head.appendChild(s);
+};
+document.getElementById('load').addEventListener('click', (ev) => loadScript(ev, 'index.js'));
+
+const statusElement = document.getElementById('status');
+const progressElement = document.getElementById('progress');
+const spinnerElement = document.getElementById('spinner');
+
+var Module = {
+	preRun: [],
+	postRun: [],
+	print: function(text) {
+		if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+		console.log(text);
+	},
+	canvas: document.getElementById('canvas'),
+	setStatus: (text) => {
+		if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+		if (text === Module.setStatus.last.text) return;
+		const m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+		const now = Date.now();
+		if (m && now - Module.setStatus.last.time < 30) return;
+		Module.setStatus.last = { time: now, text };
+		if (m) {
+			text = m[1];
+			progressElement.value = parseInt(m[2]) * 100;
+			progressElement.max = parseInt(m[4]) * 100;
+			progressElement.hidden = false;
+			spinnerElement.hidden = false;
+		} else {
+			progressElement.hidden = true;
+			if (!text) {
+				spinnerElement.hidden = true;
+				document.getElementById('loading').style.display = 'none';
+			}
+		}
+		statusElement.innerHTML = text;
+	},
+	totalDependencies: 0,
+	monitorRunDependencies: (left) => {
+		Module.totalDependencies = Math.max(Module.totalDependencies, left);
+		Module.setStatus(left
+			? `preparing... (${Module.totalDependencies - left}/${Module.totalDependencies})`
+			: 'all downloads complete.');
+	}
+};
+
+Module.setStatus('downloading...');
+window.onerror = () => {
+	Module.setStatus('Exception thrown, see JavaScript console');
+	document.getElementById('loading').style.display = 'block';
+	spinnerElement.style.display = 'none';
+	Module.setStatus = (text) => text && console.error('[post-exception status] ' + text);
+};
+
+function resizeCanvas() {
+	if (!Module || !Module.canvas) return;
+	const canvas = Module.canvas;
+	if (document.fullscreenElement) {
+		canvas.style.width = "100%";
+		canvas.style.height = "100%";
+		canvas.width = screen.width;
+		canvas.height = screen.height;
+	} else {
+		canvas.style.width = "100vw";
+		canvas.style.height = "100vh";
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	}
+}
+document.addEventListener("fullscreenchange", resizeCanvas);
+window.addEventListener("resize", resizeCanvas);
+window.addEventListener("load", resizeCanvas);
+</script>
+</body>
+</html>

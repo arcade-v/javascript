@@ -1,0 +1,90 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="webkit" name="renderer">
+    <meta content="webkit" name="force-rendering">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="no" name="msapplication-tap-highlight">
+    <meta content="yes" name="full-screen">
+    <meta content="true" name="x5-fullscreen">
+    <meta content="true" name="360-fullscreen">
+    <meta content="landscape" name="screen-orientation">
+    <meta content="landscape" name="x5-orientation">
+    <meta content="app" name="x5-page-mode">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        #Cocos2dGameContainer {
+            width: 100%;
+            height: 100%;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body dir="ltr">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MENBM6GSNY"></script>
+    <script>
+        function gtag() { dataLayer.push(arguments); }
+        window.dataLayer = window.dataLayer || [], gtag("js", new Date), gtag("config", "G-MENBM6GSNY");
+    </script>
+    <div id="Cocos2dGameContainer" style="transform: rotate(0deg);">
+        <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="99" class="gameCanvas" style="width: 100%; height: 100%;"></canvas>
+    </div>
+    <div id="splash" style="display: none;">
+        <div class="progress-bar stripes">
+            <span style="width: 100%;"></span>
+        </div>
+    </div>
+    <script charset="utf-8" src="https://cdn.jsdelivr.net/gh/arcade-v/javascript/pixel_shooter/settings.5beaa.js"></script>
+    <script charset="utf-8" src="https://cdn.jsdelivr.net/gh/arcade-v/javascript/pixel_shooter/main.93472.js"></script>
+    <script type="text/javascript">
+        (function () {
+            if (typeof VConsole !== 'undefined') {
+                window.vConsole = new VConsole();
+            }
+
+            var debug = window._CCSettings.debug;
+            var splash = document.getElementById('splash');
+            splash.style.display = 'block';
+
+            function loadScript(moduleName, cb) {
+                function scriptLoaded() {
+                    document.body.removeChild(domScript);
+                    domScript.removeEventListener('load', scriptLoaded, false);
+                    cb && cb();
+                };
+                var domScript = document.createElement('script');
+                domScript.async = true;
+                domScript.src = moduleName;
+                domScript.addEventListener('load', scriptLoaded, false);
+                document.body.appendChild(domScript);
+            }
+
+            loadScript(debug ? 'cocos2d-js.js' : 'https://cdn.jsdelivr.net/gh/arcade-v/javascript/pixel_shooter/cocos2d-js-min.55149.js', function () {
+                if (CC_PHYSICS_BUILTIN || CC_PHYSICS_CANNON) {
+                    loadScript(debug ? 'physics.js' : 'physics-min.js', function() {
+                        gameapi.init();
+                        window.boot();
+                    });
+                } else {
+                    gameapi.init();
+                    window.boot();
+                }
+            });
+        })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/arcade-v/javascript/pixel_shooter/api.js"></script>
+</body>
+</html>
